@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+  api:
+    container_name: nest_api
+    build:
+      context: .
+      target: development
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - ${PORT}:${PORT}
+      - 9229:9229
+    command: npm run start:debug
+    env_file:
+      - .env
+    networks:
+      - backend
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo:3.4
+    container_name: mongodb
+    restart: always
+    volumes:
+      - ./volumes/mongo:/data/db
+    ports:
+      - 27017:27017
+    networks:
+      - backend
+networks:
+  backend:
+volumes:
+  api_db_data:
